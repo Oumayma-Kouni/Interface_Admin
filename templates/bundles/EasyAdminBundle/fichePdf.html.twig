@@ -1,0 +1,181 @@
+{% extends 'base-pdf.html.twig' %}
+
+{% block stylesheets %}
+       <style>
+            * {
+                box-sizing: border-box;
+            }
+
+            .row {
+                margin-left:-5px;
+                margin-right:-5px;
+            }
+  
+            .column {
+                float: left;
+                width: 40%;
+                padding: 40px;
+            }
+           
+            table {
+                border-collapse: collapse;
+                width: 100%;
+                border: 1px solid black;
+            }
+
+            th{
+                text-align: center;
+                padding: 8px;
+                border: 1px solid black;
+
+            }
+            td {
+                text-align: left;
+                padding: 8px;
+                border: 1px solid #ddd;
+            }
+           
+            </style>
+     {{ parent() }}
+{% endblock %}
+
+{% block body %}
+<h4 style="border:1px; border-style:solid; border-color: black;">
+     Periode: {{   fiche.DatePaiement|date('d-m-Y')}} au {{fiche.DatePaie |date('d-m-Y')}}
+</h4>
+{% set CotisationsSocialesSalarie = 0.1 * fiche.SalaireBase %}
+<div>
+    <table>
+      <tr>
+        <th colspan = "2">Employeur</th>
+        <th colspan = "2">Employé</th>
+      </tr>
+      <tr>
+        <td>Nom:</td>
+        <td>Ilef Info-Services</td>
+        <td>Nom et Prenom:</td>
+        <td>{{ fiche.Employe }}</td>
+      </tr>
+      <tr>
+        <td>Adresse:</td>
+        <td>4 Rue Simone de Beauvoir<br>
+            94140 Alfortville<br>
+            France
+        </td>
+        <td>N° SS:</td>
+        <td>{{ fiche.Employe.NumSS }}</td>
+      </tr>
+      <tr>
+        <td>N° de siret:</td>
+        <td>88068803100017</td>
+        <td>Cin:</td>
+        <td>{{ fiche.Employe.Cin }}</td>
+      </tr>
+      <tr>
+        <td>Code NAF:</td>
+        <td>6202A</td>
+        <td>Matricule:</td>
+        <td>{{ fiche.Employe.Matricule }}</td>
+      </tr>
+      <tr>
+        <td>N° d'établissement (NIC)</td>
+        <td>00017</td>
+        <td>Poste:</td>
+        <td>{{ fiche.Employe.Poste }}</td>
+      </tr>
+
+    </table>
+
+    <table>
+        <tr>
+            <th >Designation</th>
+            <th >Gains</th>
+        </tr>
+        <tr>
+            <td>Salaire de Base</td>
+            <td>{{ fiche.SalaireBase }}</td>
+        </tr>
+        <tr>
+            <td>Prime</td>
+            <td>{{ fiche.Prime }}</td>
+        </tr>
+        <tr>
+            <td>Indemnités Supplémentaires</td>
+            <td>{{ fiche.IndemniteSupplementaires }}</td>
+        </tr>
+        <tr>
+            <td>Indemnités de transport</td>
+            <td>{{ fiche.IndemniteDeTransport }}</td>
+        </tr>
+    </table>
+    <table>
+        <tr>
+            <th > Total Indemnités supplémentaires </th>
+            <th> {{ fiche.Prime + fiche.IndemniteSupplementaires + fiche.IndemniteDeTransport }} </th>
+        </tr>
+    </table>
+    <table>
+        <tr>
+            <td>Salaire Brut</td>
+            <td>{{ fiche.Prime + fiche.IndemniteSupplementaires + fiche.IndemniteDeTransport + fiche.SalaireBase }}</td>
+        </tr>
+        <tr>
+            <td>Cotisations sociales salarié</td>
+            <td>{{ CotisationsSocialesSalarie  }}</td>
+        </tr>
+        <tr>
+            <td>Impôts</td>
+            <td>{{ fiche.Impots }}</td>
+        </tr>
+        <tr>
+            <td>Avance</td>
+            <td>{{ fiche.Avance }}</td>
+        </tr>
+    </table>
+    <table>
+        <tr>
+            <th colspan="2"> Total retenues sur salaire </th>
+            <th> {{ CotisationsSocialesSalarie + fiche.Impots + fiche.Avance }} </th>
+        </tr>
+    </table>
+    
+    <table>
+        <tr>
+            <th > Net à payer </th>
+            <th > Mode de paiement </th>
+            <th > N° de compte </th>
+        </tr>
+        <tr>
+            <td>{{ (fiche.Prime + fiche.IndemniteSupplementaires + fiche.IndemniteDeTransport + fiche.SalaireBase) - ( CotisationsSocialesSalarie + fiche.Impots + fiche.Avance  ) }}</td>
+            <td> Virement </td>
+            <td>{{ fiche.Employe.NumCompte }}</td>
+        </tr>
+
+    </table>
+
+
+    
+</div> 
+
+<div class="row" >
+    <div class="column" >
+        
+        <p style="border:1px; border-style:solid; border-color: black; padding: 1em; ">
+        Signature et cachet employeur<br>
+        <br><br>
+        </p>
+    </div>
+    <div class="column" >
+        
+        <p style="border:1px; border-style:solid; border-color: black; padding: 1em; ">
+        Signature employé<br>
+        <br><br>
+        </p>
+    </div>
+
+</div>
+
+
+
+   
+{% endblock %}
